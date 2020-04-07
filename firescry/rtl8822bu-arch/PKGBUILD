@@ -1,0 +1,29 @@
+# Maintainer: firescry
+
+_commit='9438d453ec5b4878b7d4a2b4bcf87b37df09c3fb'
+
+pkgname=rtl8822bu-arch
+pkgver=20200407
+pkgrel=1
+pkgdesc='RTL8822BU module for Arch Kernel'
+arch=('x86_64')
+url='https://github.com/EntropicEffect/rtl8822bu'
+license=('GPL')
+makedepends=('bc' 'git' 'linux-headers')
+source=("git+https://github.com/EntropicEffect/rtl8822bu.git#commit=${_commit}")
+sha256sums=('SKIP')
+
+build() {
+    _kver=$(cat /usr/src/linux/version)
+
+    cd ${srcdir}/rtl8822bu/
+    make -j$(nproc) KVER=${_kver}
+    make strip
+}
+
+package() {
+    _kver=$(cat /usr/src/linux/version)
+
+    install -D -m0644 "${srcdir}/rtl8822bu/88x2bu.ko" -t "${pkgdir}/usr/lib/modules/${_kver}/extramodules"
+    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+}
