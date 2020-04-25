@@ -1,0 +1,33 @@
+# Maintainer: firescry
+
+pkgname=libhsakmt
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Radeon Open Compute Thunk Interface"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/ROCT-Thunk-Interface"
+license=('MIT')
+depends=('numactl' 'pciutils')
+makedepends=('cmake' 'ninja')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/ROCT-Thunk-Interface/archive/roc-${pkgver}.tar.gz)
+sha256sums=('2cabe9d2cfa72031c05d11290837c476182e72d8dec2049298f691143fdd212b')
+
+prepare() {
+    sed -e "s:get_version ( \"1.0.0\" ):get_version ( \"${pkgver}\" ):" -i "${srcdir}/ROCT-Thunk-Interface-roc-${pkgver}/CMakeLists.txt"
+}
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_DOCDIR="/usr/share/licenses/${pkgname}" \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -D CPACK_PACKAGING_INSTALL_PREFIX="/usr" \
+        -G Ninja \
+        -S "${srcdir}/ROCT-Thunk-Interface-roc-${pkgver}"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install install-dev
+}
