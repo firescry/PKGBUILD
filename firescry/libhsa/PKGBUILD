@@ -1,0 +1,40 @@
+# Maintainer: firescry
+
+pkgname=libhsa
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="ROCm Platform Runtime"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/ROCR-Runtime"
+license=('custom:University of Illinois/NCSA Open Source License')
+depends=('libelf' 'libhsakmt')
+makedepends=('cmake' 'ninja')
+source=(
+    ${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/ROCR-Runtime/archive/rocm-${pkgver}.tar.gz
+    https://gitweb.gentoo.org/repo/gentoo.git/plain/dev-libs/rocr-runtime/files/rocr-runtime-3.0.0-cmake-install-paths.patch
+)
+sha256sums=(
+    'fa2d2d1f8a61d8a6952d377cf288d78c61776c3c2a666f163cafc3aa19ab0b61'
+    'a1d67e37f086fe4533abcdf0e83c378e1ddc744b9358d5fc6d394f5b96fdc6bf'
+)
+
+prepare() {
+    for PATCH in $(find "${srcdir}" -name \*.patch); do
+        patch -t -d "${srcdir}/ROCR-Runtime-rocm-${pkgver}/src" -i "${PATCH}" -p 1 --verbose
+    done
+}
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -G Ninja \
+        -S "${srcdir}/ROCR-Runtime-rocm-${pkgver}/src"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m 0644 "${srcdir}/ROCR-Runtime-rocm-${pkgver}/src/LICENSE.md"
+}
