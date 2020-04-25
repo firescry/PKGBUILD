@@ -1,0 +1,18 @@
+# Maintainer: firescry
+
+pkgname=fahclient
+pkgver=7.6.9
+pkgrel=1
+pkgdesc='Folding@home client'
+arch=('x86_64')
+url='https://foldingathome.org'
+license=('custom')
+depends=('glibc')
+source=(https://download.foldingathome.org/releases/public/release/fahclient/debian-stable-64bit/v${pkgver:0:3}/fahclient_${pkgver}-64bit-release.tar.bz2)
+sha256sums=('b580a8076f3147bacb9d1599e1b1765956a8e37b8a79bd961ffe2e3adc7df110')
+
+package() {
+    install -Dm0644 "${srcdir}/fahclient_${pkgver}-64bit-release/copyright" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+    install -Dm0755 "${srcdir}/fahclient_${pkgver}-64bit-release/FAHClient" -t "${pkgdir}/usr/bin"
+    install -Dm0755 "${srcdir}/fahclient_${pkgver}-64bit-release/FAHCoreWrapper" -t "${pkgdir}/usr/bin"
+}
