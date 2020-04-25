@@ -1,0 +1,31 @@
+# Maintainer: firescry
+
+pkgname=rocminfo
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="ROCm Application for Reporting System Info"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/rocminfo"
+license=('custom:University of Illinois/NCSA Open Source License')
+depends=('libhsa' 'python')
+makedepends=('cmake' 'ninja')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/rocminfo/archive/rocm-${pkgver}.tar.gz)
+sha256sums=('e666f662c9e465aaabbbd0b109d87e017243cdf1a0898fabf5a90947bb3dbcd7')
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -D ROCM_DIR="/usr" \
+        -D ROCRTST_BLD_TYPE="Release" \
+        -D ROCRTST_BLD_BITS=64 \
+        -G Ninja \
+        -S "${srcdir}/rocminfo-rocm-${pkgver}"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    strip -s "${pkgdir}/usr/bin/rocminfo"
+    install -Dm644 "${srcdir}/rocminfo-rocm-${pkgver}/License.txt" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
