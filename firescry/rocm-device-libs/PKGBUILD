@@ -1,0 +1,29 @@
+# Maintainer: firescry
+
+pkgname=rocm-device-libs
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Radeon Open Compute Device Libraries"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/ROCm-Device-Libs"
+license=('custom:University of Illinois/NCSA Open Source License')
+makedepends=('cmake' 'libhsa' 'llvm-rocm' 'ninja')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/ROCm-Device-Libs/archive/rocm-ocl-${pkgver}.tar.gz)
+sha256sums=('706b08230790e08ca6a7a2fb7687d6131fd39a562148340e00fa37a6c06769c5')
+
+build() {
+    export CC="/usr/lib/llvm-rocm/bin/clang"
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -D LLVM_DIR="/usr/lib/llvm-rocm" \
+        -G Ninja \
+        -S "${srcdir}/ROCm-Device-Libs-rocm-ocl-${pkgver}"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    install -Dm644 "${srcdir}/ROCm-Device-Libs-rocm-ocl-${pkgver}/LICENSE" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
