@@ -2,12 +2,12 @@
 
 pkgname=rocm-device-libs
 pkgver=3.3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Radeon Open Compute Device Libraries"
 arch=('x86_64')
 url="https://github.com/RadeonOpenCompute/ROCm-Device-Libs"
 license=('custom:University of Illinois/NCSA Open Source License')
-makedepends=('cmake' 'libhsa' 'llvm-rocm' 'ninja')
+makedepends=('cmake' 'llvm-rocm' 'ninja' 'rocm-cmake')
 source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/ROCm-Device-Libs/archive/rocm-ocl-${pkgver}.tar.gz)
 sha256sums=('706b08230790e08ca6a7a2fb7687d6131fd39a562148340e00fa37a6c06769c5')
 
