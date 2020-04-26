@@ -1,0 +1,26 @@
+# Maintainer: firescry
+
+pkgname=rocm-cmake
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Radeon Open Compute CMake modules"
+arch=('any')
+url="https://github.com/RadeonOpenCompute/rocm-cmake"
+license=('MIT')
+makedepends=('cmake' 'ninja')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/rocm-cmake/archive/rocm-${pkgver}.tar.gz)
+sha256sums=('76ed3ee8e56cf3246011cf7723c2abda539e1136e7e7f6909bfa45d268b8644f')
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -G Ninja \
+        -S "${srcdir}/rocm-cmake-rocm-${pkgver}"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    install -Dm644 "${srcdir}/rocm-cmake-rocm-${pkgver}/LICENSE" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
