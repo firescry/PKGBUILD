@@ -1,0 +1,38 @@
+# Maintainer: firescry
+
+pkgname=llvm-rocm
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Radeon Open Compute llvm/clang/lld"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/llvm-project"
+license=('custom:Apache License v2.0 with LLVM Exceptions')
+depends=('libxml2' 'python' 'z3')
+makedepends=('cmake' 'ninja')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/llvm-project/archive/rocm-ocl-${pkgver}.tar.gz)
+sha256sums=('a2bef7042e8e2f2cd8548cb246b88322e1c77188839983dcac8312d56f544dc8')
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_PREFIX="/usr/lib/${pkgname}" \
+        -D LLVM_ENABLE_PROJECTS="llvm;clang;lld" \
+        -D LLVM_TARGETS_TO_BUILD="AMDGPU;X86" \
+        -D LLVM_BUILD_DOCS=NO \
+        -D LLVM_ENABLE_OCAMLDOC=OFF \
+        -D LLVM_ENABLE_SPHINX=NO \
+        -D LLVM_ENABLE_DOXYGEN=OFF \
+        -D LLVM_INSTALL_UTILS=ON \
+        -D LLVM_VERSION_SUFFIX=rocm \
+        -D OCAMLFIND=NO \
+        -G Ninja \
+        -S "${srcdir}/llvm-project-rocm-ocl-${pkgver}/llvm"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    rm -rf "${pkgdir}/usr/lib/${pkgname}/share"
+    install -Dm644 "${srcdir}/llvm-project-rocm-ocl-${pkgver}/llvm/LICENSE.TXT" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
