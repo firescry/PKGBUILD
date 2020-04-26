@@ -1,0 +1,30 @@
+# Maintainer: firescry
+
+pkgname=rocm-comgr
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Radeon Open Compute Lightning Compiler"
+arch=('x86_64')
+url="https://github.com/RadeonOpenCompute/ROCm-CompilerSupport"
+license=('custom')
+depends=('z3' 'zlib')
+makedepends=('cmake' 'llvm-rocm' 'ninja' 'rocm-cmake' 'rocm-device-libs')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/archive/rocm-${pkgver}.tar.gz)
+sha256sums=('01e2524e0f28ecd6f46c9720f279207de935d826b0172158792aa3ec86af9ca7')
+
+build() {
+    cmake \
+        -B "${srcdir}/build" \
+        -D CMAKE_BUILD_TYPE=Release \
+        -D CMAKE_INSTALL_PREFIX="/usr" \
+        -D CMAKE_PREFIX_PATH="/usr/lib/llvm-rocm" \
+        -G Ninja \
+        -S "${srcdir}/ROCm-CompilerSupport-rocm-${pkgver}/lib/comgr"
+    ninja -C "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" ninja -C "${srcdir}/build" install
+    rm -rf "${pkgdir}/usr/share"
+    install -Dm644 "${srcdir}/ROCm-CompilerSupport-rocm-${pkgver}/lib/comgr/LICENSE.txt" -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
