@@ -1,0 +1,16 @@
+name: Check PKGBUILD
+
+on: [push, pull_request]
+
+jobs:
+  namcap:
+    runs-on: ubuntu-latest
+
+    container:
+      image: archlinux:latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update system
+      run: pacman -Syu
