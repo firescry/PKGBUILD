@@ -16,6 +16,7 @@ jobs:
         echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
         pacman -Sy --noconfirm base devtools
         pacman -Syuu --noconfirm
+        systemd-machine-id-setup
 
     - uses: actions/checkout@v2
 
