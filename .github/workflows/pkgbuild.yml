@@ -8,7 +8,7 @@ jobs:
 
     container:
       image: archlinux:latest
-      options: --privileged --tmpfs /run
+      options: --tmpfs /proc --tmpfs /run --tmpfs /sys
 
     steps:
     - name: Setup Arch Linux container
@@ -16,7 +16,7 @@ jobs:
         echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
         pacman -Sy --noconfirm base devtools
         pacman -Syuu --noconfirm
-        systemd-machine-id-setup --commit
+        systemd-machine-id-setup
 
     - uses: actions/checkout@v2
 
