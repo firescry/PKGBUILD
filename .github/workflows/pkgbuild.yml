@@ -1,16 +1,22 @@
-name: Check PKGBUILD
+name: Build packages
 
-on: [push, pull_request]
+on: push
 
 jobs:
-  namcap:
+  makepkg:
     runs-on: ubuntu-latest
 
     container:
       image: archlinux:latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Set pacman mirror
+      run: echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+
+    - name: Install devtools
+      run: pacman -Sy --noconfirm devtools
 
     - name: Update system
-      run: pacman -Syu --noconfirm
+      run: pacman -Syuu --noconfirm
+
+    - uses: actions/checkout@v2
