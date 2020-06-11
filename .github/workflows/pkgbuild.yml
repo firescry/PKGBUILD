@@ -17,3 +17,6 @@ jobs:
         pacman -Syuu --noconfirm
 
     - uses: actions/checkout@v2
+
+    - name: Build packages
+      run: ${GITHUB_WORKSPACE}/tools/build.sh
