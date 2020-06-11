@@ -10,7 +10,7 @@ jobs:
       image: archlinux:latest
 
     steps:
-    - name: Prepare Arch Linux container
+    - name: Setup Arch Linux container
       run: |
         echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
         pacman -Sy --noconfirm base devtools
