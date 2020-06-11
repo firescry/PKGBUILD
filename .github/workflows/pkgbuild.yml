@@ -10,13 +10,10 @@ jobs:
       image: archlinux:latest
 
     steps:
-    - name: Set pacman mirror
-      run: echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-
-    - name: Install devtools
-      run: pacman -Sy --noconfirm devtools
-
-    - name: Update system
-      run: pacman -Syuu --noconfirm
+    - name: Prepare Arch Linux container
+      run: |
+        echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+        pacman -Sy --noconfirm devtools
+        pacman -Syuu --noconfirm
 
     - uses: actions/checkout@v2
