@@ -1,0 +1,36 @@
+# Maintainer: firescry
+
+_commit='1a55f3632ad624351dcc935d147ed29a1c746f0e'
+
+pkgname=rtw88-usb
+pkgver=20201021
+pkgrel=1
+pkgdesc='rtw88 family usb driver for linux'
+arch=('x86_64')
+url='https://github.com/ulli-kroll/rtw88-usb'
+license=('GPL2')
+makedepends=('git' 'linux-headers')
+source=("git+https://github.com/ulli-kroll/rtw88-usb.git#commit=${_commit}")
+sha256sums=('SKIP')
+
+prepare () {
+    sed -i "s/^\(CONFIG_RTW88_.*=\)m/\1n/g" "${srcdir}/${pkgname}/Makefile"
+
+    sed -i "s/^\(CONFIG_RTW88_CORE=\)n/\1m/g" "${srcdir}/${pkgname}/Makefile"
+    sed -i "s/^\(CONFIG_RTW88_USB=\)n/\1m/g" "${srcdir}/${pkgname}/Makefile"
+    sed -i "s/^\(CONFIG_RTW88_8822BU=\)n/\1m/g" "${srcdir}/${pkgname}/Makefile"
+}
+
+build() {
+    _kver=$(cat /usr/src/linux/version)
+
+    cd ${srcdir}/${pkgname}/
+    make KERNELDIR="/usr/lib/modules/${_kver}/build"
+}
+
+package() {
+    _kver=$(cat /usr/src/linux/version)
+
+    install -D -m0644 "${srcdir}/${pkgname}/"*.ko -t "${pkgdir}/usr/lib/modules/${_kver}/kernel/drivers/net/wireless/realtek/rtw88"
+    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+}
