@@ -7,16 +7,13 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: archlinux:latest
-      options: --tmpfs /proc --tmpfs /run --tmpfs /sys
+      image: archlinux/archlinux:base-devel
 
     steps:
-    - name: Setup Arch Linux container
+    - name: Update Arch Linux container
       run: |
         echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-        pacman -Sy --noconfirm base devtools
         pacman -Syuu --noconfirm
-        systemd-machine-id-setup
 
     - uses: actions/checkout@v2
 
