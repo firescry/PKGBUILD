@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Update Arch Linux container
       run: |
-        echo 'Server = https://arch.mirror.constant.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-        pacman -Syuu --noconfirm
         adduser -m builder
 
     - uses: actions/checkout@v2
