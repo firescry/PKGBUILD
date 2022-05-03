@@ -19,12 +19,18 @@ jobs:
         run: |
           pacman-key --init
           pacman -Syy --needed --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm
+          pacman -Syu --needed --noconfirm namcap
 
       - uses: actions/checkout@v3
 
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Run makepkg
+        run: makepkg -s
+
+      - name: Test PKGBUILD
+        run: namcap PKGBUILD
+
+      - name: Test final package
+        run: namcap *.pkg.tar.zst
 
       - name: Run a multi-line script
         run: |
