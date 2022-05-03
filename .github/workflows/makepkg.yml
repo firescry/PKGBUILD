@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Run makepkg
-        run: runuser -u github -c makepkg -s
+        run: runuser -u github -- makepkg -s
 
       - name: Test PKGBUILD
         run: namcap PKGBUILD
