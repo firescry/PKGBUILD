@@ -20,11 +20,12 @@ jobs:
           pacman-key --init
           pacman -Syy --needed --noconfirm archlinux-keyring
           pacman -Syu --needed --noconfirm namcap
+          useradd -m github
 
       - uses: actions/checkout@v3
 
       - name: Run makepkg
-        run: makepkg -s
+        run: runuser -u github -c makepkg -s
 
       - name: Test PKGBUILD
         run: namcap PKGBUILD
